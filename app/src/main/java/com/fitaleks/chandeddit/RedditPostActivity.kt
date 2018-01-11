@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.method.ScrollingMovementMethod
+import android.view.View
 import com.bumptech.glide.Glide
 import com.fitaleks.chandeddit.data.RedditPost
 import com.fitaleks.chandeddit.data.Resource
@@ -24,6 +26,7 @@ class RedditPostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reddit_post)
+        details_text.movementMethod = ScrollingMovementMethod()
         model = getViewModel()
         initData()
     }
@@ -41,9 +44,14 @@ class RedditPostActivity : AppCompatActivity() {
     private fun initData() {
         model.showPost(intent.getStringExtra(PARAM_POST_ID))
         model.repoResult.observe(this, Observer<Resource<RedditPost>> {
-            Glide.with(this)
-                    .load(it?.data?.thumbnail)
-                    .into(details_image)
+            if (it?.data?.thumbnail?.startsWith("https") == true) {
+                Glide.with(this)
+                        .load(it.data.thumbnail)
+                        .into(details_image)
+            } else {
+                details_image.visibility = View.GONE
+            }
+
             details_text.text = it?.data?.selftext
         })
     }

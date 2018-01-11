@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
 import com.fitaleks.chandeddit.data.RedditPost
+import com.fitaleks.chandeddit.util.timeDiffToString
+import java.util.*
 
 /**
  * Created by Alexander on 04.01.2018.
@@ -16,6 +18,7 @@ import com.fitaleks.chandeddit.data.RedditPost
 class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : RecyclerView.ViewHolder(view) {
     private val title = view.findViewById<TextView>(R.id.item_title)
     private val image = view.findViewById<ImageView>(R.id.item_image)
+    private val createdInfo = view.findViewById<TextView>(R.id.created)
     private lateinit var post: RedditPost
 
     init {
@@ -32,16 +35,24 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
             return ItemRedditPostViewHolder(view, requestManager)
         }
     }
+
     fun bind(redditPost: RedditPost?) {
         if (redditPost == null) {
             return
         }
         title.text = redditPost.title
+        val creationTime = Date(redditPost.createdUtc.toLong() * 1000)
+        val currentTime = Date()
+        val diff = currentTime.time - creationTime.time
+
+        createdInfo.text = createdInfo.context.getString(R.string.item_reddit_post_created, timeDiffToString(diff), redditPost.author)
         if (redditPost.thumbnail?.startsWith("http") == true) {
+            image.visibility = View.VISIBLE
             glide.load(redditPost.thumbnail)
                     .into(image)
         } else {
             glide.clear(image)
+            image.visibility = View.GONE
         }
         this.post = redditPost
     }
