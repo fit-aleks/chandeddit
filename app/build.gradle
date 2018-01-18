@@ -50,6 +50,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"
     implementation "android.arch.paging:runtime:$paging"
 
+    implementation "com.android.support:customtabs:$support"
+
     implementation "android.arch.lifecycle:extensions:$arch"
     implementation "android.arch.lifecycle:runtime:$lifecycle"
     kapt "android.arch.lifecycle:compiler:$arch"

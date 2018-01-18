@@ -1,6 +1,9 @@
 package com.fitaleks.chandeddit
 
 import android.content.Intent
+import android.net.Uri
+import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -23,9 +26,15 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
 
     init {
         view.setOnClickListener { clickedView ->
-            val intent = Intent(clickedView.context, RedditPostActivity::class.java)
-            intent.putExtra(RedditPostActivity.PARAM_POST_ID, post.name)
-            clickedView.context.startActivity(intent)
+            if (post.selftext?.isNotEmpty() == true) {
+                val intent = Intent(clickedView.context, RedditPostActivity::class.java)
+                intent.putExtra(RedditPostActivity.PARAM_POST_ID, post.name)
+                clickedView.context.startActivity(intent)
+            } else {
+                val builder = CustomTabsIntent.Builder()
+                builder.setToolbarColor(ContextCompat.getColor(clickedView.context, R.color.colorPrimary))
+                builder.build().launchUrl(clickedView.context, Uri.parse(post.url))
+            }
         }
     }
 
