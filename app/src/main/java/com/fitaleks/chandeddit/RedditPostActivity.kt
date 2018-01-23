@@ -37,6 +37,7 @@ class RedditPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reddit_post)
         model = getViewModel()
+        initData()
 
         details_recycler.layoutManager = LinearLayoutManager(this)
         details_recycler.adapter = adapter
