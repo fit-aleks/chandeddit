@@ -16,6 +16,8 @@ import retrofit2.http.Query
 /**
  * Created by alex206512252 on 1/2/18.
  */
+const val BASE_URL = "https://reddit.com"
+
 interface RedditApi {
 
     @GET("/r/androiddev.json")
@@ -29,8 +31,8 @@ interface RedditApi {
     fun getTopBefore(@Query("before") before: String,
                      @Query("limit") limit: Int): Call<ListingResponse>
 
-    @GET("/by_id/{post_id}.json")
-    fun getPostsById(@Path("post_id") postId: String): LiveData<Response<ListingResponse>>
+    @GET("/by_id/{post_id_with_type}.json")
+    fun getPostsById(@Path("post_id_with_type") postIdWithType: String): LiveData<Response<ListingResponse>>
 
     class ListingResponse(val data: ListingData)
 
@@ -43,7 +45,6 @@ interface RedditApi {
     data class RedditChildrenResponse(val data: RedditPost)
 
     companion object {
-        private const val BASE_URL = "https:/reddit.com"
         fun create(): RedditApi {
             val logger = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { Log.d("API", it) })
             logger.level = HttpLoggingInterceptor.Level.BODY

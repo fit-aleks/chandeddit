@@ -4,13 +4,14 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import com.fitaleks.chandeddit.data.RedditComment
 import com.fitaleks.chandeddit.data.RedditPost
 
 /**
  * Created by alex206512252 on 1/2/18.
  */
 @Database(
-        entities = [(RedditPost::class)],
+        entities = [(RedditPost::class), (RedditComment::class)],
         version = 1,
         exportSchema = false
 )
