@@ -38,22 +38,11 @@ interface RedditCommentsApi {
             return Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)
-//                    .addConverterFactory(EmptyToNullConverter())
-//                    .addConverterFactory(CommentsConverterFactory())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
                     .create(RedditCommentsApi::class.java)
         }
     }
-
-    /*class ListingResponse(val data: CommentsListingData)
-    class CommentsListingData(
-            val children: List<CommentsData>,
-            val after: String?,
-            val before: String?
-    )
-
-    data class CommentsData(val data: RedditComment)*/
 }
 
 class CommentTypeAdapterFactory : TypeAdapterFactory {
