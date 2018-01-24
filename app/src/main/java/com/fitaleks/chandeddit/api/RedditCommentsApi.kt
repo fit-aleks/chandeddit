@@ -56,52 +56,23 @@ interface RedditCommentsApi {
     data class CommentsData(val data: RedditComment)*/
 }
 
-/*
-class EmptyToNullConverter : Converter.Factory() {
-    override fun responseBodyConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
-        val delegate = retrofit.nextResponseBodyConverter<Any>(this, type, annotations)
-        return Converter<ResponseBody, Any> { body -> if (body.contentLength() == 0L) null else delegate.convert(body) }
-    }
-}
-
-class CommentsConverterFactory : Converter.Factory() {
-    override fun responseBodyConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
-        Log.d("Converter", "type = $type")
-//        if (type != List::class) {
-//            return null
-//        }
-        Log.d("Converter", "searching for converter")
-        val delegate: Converter<ResponseBody, List<RedditCommentsApi.ListingResponse>> = retrofit.nextResponseBodyConverter(this, List::class.java, annotations)
-        Log.d("Converter", "found converter = $delegate")
-
-        return Converter<ResponseBody, List<RedditCommentsApi.CommentsData>> { body ->
-            val elementWithComments = delegate.convert(body)[1]
-
-//            (elementWithComments as RedditCommentsApi.ListingResponse).data.children
-            emptyList()
-        }
-    }
-}
-*/
-
-
 class CommentTypeAdapterFactory : TypeAdapterFactory {
     override fun <T : Any?> create(gson: Gson, type: TypeToken<T>): TypeAdapter<T> {
-//        val delegate = gson.getDelegateAdapter(this, type)
         val elemAdapter = gson.getAdapter(JsonElement::class.java)
 
-        val commentsAdapter = CommentsListTypeAdapter<T>(elemAdapter)
+        val commentsAdapter = CommentsListTypeAdapter(elemAdapter)
 
+        @Suppress("UNCHECKED_CAST")
         return commentsAdapter as TypeAdapter<T>
     }
 }
 
-class CommentsListTypeAdapter<T>(val elemAdapter: TypeAdapter<JsonElement>): TypeAdapter<List<T>>() {
+class CommentsListTypeAdapter(val elemAdapter: TypeAdapter<JsonElement>): TypeAdapter<List<RedditComment>>() {
     private val gson = Gson()
-    override fun write(out: JsonWriter?, value: List<T>?) {
+    override fun write(out: JsonWriter?, value: List<RedditComment>?) {
     }
 
-    override fun read(jsonReader: JsonReader?): List<T> {
+    override fun read(jsonReader: JsonReader?): List<RedditComment> {
         var jsonElement = elemAdapter.read(jsonReader)
         if (jsonElement.isJsonArray) {
             val commensData = jsonElement.asJsonArray[1].asJsonObject
@@ -112,13 +83,13 @@ class CommentsListTypeAdapter<T>(val elemAdapter: TypeAdapter<JsonElement>): Typ
                 }
             }
         }
-        val listOfComments = ArrayList<T>()
+        val listOfComments = ArrayList<RedditComment>()
         if (jsonElement != null && jsonElement.isJsonArray) {
             val commentsWithKinds = jsonElement.asJsonArray
             (0 until commentsWithKinds.size()).forEach { index ->
                 val comment = commentsWithKinds[index].asJsonObject["data"]
                 Log.d("PARSER", " ${comment.asJsonObject["author"]} + ${comment.asJsonObject["body"]}")
-                listOfComments.add(gson.fromJson(comment, RedditComment::class.java) as T)
+                listOfComments.add(gson.fromJson(comment, RedditComment::class.java))
             }
 
         }
