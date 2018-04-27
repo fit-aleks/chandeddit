@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.bumptech.glide.Glide
 import com.fitaleks.chandeddit.api.RedditCommentsApi
@@ -30,12 +31,16 @@ class RedditPostActivity : AppCompatActivity() {
     }
 
     private lateinit var model: CertainPostViewModel
+    private val adapter = PostDetailsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reddit_post)
-        details_text.movementMethod = ScrollingMovementMethod()
         model = getViewModel()
+
+        details_recycler.layoutManager = LinearLayoutManager(this)
+        details_recycler.adapter = adapter
+
         initData()
         initComments()
     }
@@ -61,7 +66,7 @@ class RedditPostActivity : AppCompatActivity() {
                 details_image.visibility = View.GONE
             }
 
-            details_text.text = it?.data?.selftext
+            adapter.setMainText(it?.data?.selftext)
         })
     }
 
