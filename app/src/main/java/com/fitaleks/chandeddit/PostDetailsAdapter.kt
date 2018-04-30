@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.fitaleks.chandeddit.data.RedditComment
 
 /**
  * Created by Alexander on 03.04.2018.
@@ -16,18 +17,20 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_COMMENTS = 2
     private var mainText: String? = null
     private var mainImage: String? = null
+    private var comments: List<RedditComment>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == TYPE_TEXT) {
-            return PostTextViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_text, parent, false))
-        } else {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return when (viewType) {
+            TYPE_TEXT -> PostTextViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_text, parent, false))
+            TYPE_COMMENTS -> CommentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_comment, parent, false))
+            else -> TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) TYPE_IMAGE else if (position == 1) TYPE_TEXT
+        if (position == 0) return TYPE_TEXT
+        else if (comments != null && (position - 1) < (comments?.size ?: 0)) return TYPE_COMMENTS
         return TYPE_TEXT
     }
 
@@ -36,12 +39,23 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (mainImage != null && mainImage?.startsWith("https") == true) {
             numOfItems++
         }
+        comments?.let {
+            numOfItems += it.size
+        }
         return numOfItems
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (position == 0) {
             (holder as PostTextViewHolder).textView.text = mainText
+        } else {
+            comments?.let {
+                val comment = it[position - 1]
+                (holder as CommentViewHolder).apply {
+                    this.authorTextView.text = comment.author
+                    this.commentTextView.text = comment.body
+                }
+            }
         }
     }
 
@@ -52,10 +66,22 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
     }
+
+    fun setComments(commentsList: List<RedditComment>) {
+        comments = commentsList
+        comments?.let {
+            notifyDataSetChanged()
+        }
+    }
 }
 
 class PostTextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val textView: TextView = itemView.findViewById(R.id.item_post_details_text)
+}
+
+class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val authorTextView: TextView = itemView.findViewById(R.id.item_post_comment_author)
+    val commentTextView: TextView = itemView.findViewById(R.id.item_post_comment_text)
 }
 
 class PostImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

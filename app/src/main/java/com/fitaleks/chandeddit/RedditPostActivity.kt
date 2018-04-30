@@ -6,9 +6,9 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.fitaleks.chandeddit.api.RedditCommentsApi
@@ -25,9 +25,9 @@ import retrofit2.Response
  */
 class RedditPostActivity : AppCompatActivity() {
     companion object {
+        const val PARAM_POST_ID = "reddit_post_id"
         val TAG = RedditPostActivity::class.java.simpleName
         val PARAM_POST_ID_WITH_KIND = "reddit_post_id_with_kind"
-        val PARAM_POST_ID = "reddit_post_id"
     }
 
     private lateinit var model: CertainPostViewModel
@@ -41,6 +41,7 @@ class RedditPostActivity : AppCompatActivity() {
 
         details_recycler.layoutManager = LinearLayoutManager(this)
         details_recycler.adapter = adapter
+        details_recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         initData()
         initComments()
@@ -72,7 +73,7 @@ class RedditPostActivity : AppCompatActivity() {
     }
 
     private fun initComments() {
-        RedditCommentsApi.create().getCommentsForPost("androiddev", intent.getStringExtra(PARAM_POST_ID)).enqueue(object : Callback<List<RedditComment>>{
+        RedditCommentsApi.create().getCommentsForPost("androiddev", intent.getStringExtra(PARAM_POST_ID)).enqueue(object : Callback<List<RedditComment>> {
             override fun onFailure(call: Call<List<RedditComment>>?, t: Throwable?) {
                 Log.e(TAG, t.toString())
                 t?.printStackTrace()
@@ -80,8 +81,11 @@ class RedditPostActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<List<RedditComment>>?, response: Response<List<RedditComment>>?) {
-                response?.body()?.forEach {
-                    Log.d(TAG, "Success! ${it.author}  ${it.body}")
+                response?.body()?.let {
+                    adapter.setComments(it)
+                    it.forEach {
+                        Log.d(TAG, "Success! ${it.author}  ${it.body}")
+                    }
                 }
             }
         })
