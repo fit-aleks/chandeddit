@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/default_horizontal_margin"
-    android:layout_marginStart="@dimen/default_horizontal_margin">
+    android:layout_marginEnd="@dimen/horizontal_margin"
+    android:layout_marginStart="@dimen/horizontal_margin">
 
     <TextView
         android:id="@+id/item_post_comment_author"
@@ -14,10 +14,8 @@
         android:layout_marginTop="@dimen/default_margin"
         android:maxLines="1"
         android:textAppearance="?android:textAppearanceSmall"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Some author name" />
+        tools:text="Some author name • 11h" />
 
     <TextView
         android:id="@+id/item_post_comment_text"
@@ -26,6 +24,7 @@
         android:layout_marginBottom="@dimen/default_margin"
         android:layout_marginTop="@dimen/default_margin"
         android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_post_comment_author"
         tools:text="Some comment" />

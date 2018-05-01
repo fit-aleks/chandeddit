@@ -23,3 +23,19 @@ fun timeDiffToString(timeDiff: Long) : String {
     }
     return "just now"
 }
+
+fun timeDiffToStringShort(timeDiff: Long) : String {
+    val days = timeDiff / millisInDay
+    if (days > 0) {
+        return "${days}d"
+    }
+    val hours = timeDiff/ millisInHour
+    if (hours > 0) {
+        return "${hours}h"
+    }
+    val minutes = timeDiff / millisInMinute
+    if (minutes > 0) {
+        return "${minutes}m"
+    }
+    return "just now"
+}

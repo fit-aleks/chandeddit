@@ -1,12 +1,17 @@
 package com.fitaleks.chandeddit
 
+import android.os.Build
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.fitaleks.chandeddit.data.RedditComment
+import com.fitaleks.chandeddit.util.timeDiffToStringShort
+import java.util.*
 
 /**
  * Created by Alexander on 03.04.2018.
@@ -46,14 +51,22 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        if (position == 0) {
-            (holder as PostTextViewHolder).textView.text = mainText
-        } else {
-            comments?.let {
-                val comment = it[position - 1]
-                (holder as CommentViewHolder).apply {
-                    this.authorTextView.text = comment.author
-                    this.commentTextView.text = comment.body
+        when (getItemViewType(position)) {
+            TYPE_TEXT -> (holder as PostTextViewHolder).textView.text = mainText
+            TYPE_COMMENTS -> {
+                comments?.let {
+                    val comment = it[position - 1]
+                    (holder as CommentViewHolder).apply {
+                        val diff = Date().time - Date(comment.createdUtc.toLong() * 1000).time
+                        this.authorTextView.text = this.authorTextView.context.getString(R.string.item_reddit_comment_created, comment.author, timeDiffToStringShort(diff))
+                        // one convert from html to text is not enough. format requires it to be done twice
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                            this.commentTextView.text = Html.fromHtml(Html.fromHtml(comment.bodyHtml).toString())
+                        } else {
+                            this.commentTextView.text = Html.fromHtml(Html.fromHtml(comment.bodyHtml, Html.FROM_HTML_MODE_LEGACY).toString(), Html.FROM_HTML_MODE_LEGACY)
+                        }
+                        this.commentTextView.movementMethod = LinkMovementMethod.getInstance()
+                    }
                 }
             }
         }
@@ -81,6 +94,7 @@ class PostTextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val authorTextView: TextView = itemView.findViewById(R.id.item_post_comment_author)
+    //    val timeTextView: TextView = itemView.findViewById(R.id.item_post_comment_time)
     val commentTextView: TextView = itemView.findViewById(R.id.item_post_comment_text)
 }
 

@@ -16,7 +16,9 @@ data class RedditComment(
         @SerializedName("link_id")
         val linkId: String,
         val body: String,
+        @SerializedName("body_html")
+        val bodyHtml: String,
         val author: String,
         @SerializedName("created_utc")
-        val createdAt: Double
+        val createdUtc: Double
 )
