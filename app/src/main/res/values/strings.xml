@@ -4,4 +4,5 @@
 
     <string name="item_reddit_post_created">Submitted %1$s by %2$s</string>
     <string name="item_reddit_comment_created">%1$s • %2$s</string>
+    <string name="item_reddit_comments_title">Comments</string>
 </resources>
