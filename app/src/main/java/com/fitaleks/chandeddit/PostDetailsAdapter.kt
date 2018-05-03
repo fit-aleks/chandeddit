@@ -7,10 +7,10 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
 import com.fitaleks.chandeddit.data.RedditComment
+import com.fitaleks.chandeddit.util.CodeTagHandler
 import com.fitaleks.chandeddit.util.timeDiffToStringShort
 import java.util.*
 
@@ -60,23 +60,25 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         when (getItemViewType(position)) {
             TYPE_TEXT -> {
+                if (mainText == null || mainText?.isEmpty() == true) {
+                    return
+                }
                 (holder as PostTextViewHolder).apply {
+                    val codeTagHandler = CodeTagHandler()
                     mainText?.let {
-                        this.textView.loadData(
-//                                it.replace("&amp;", "&").replace("&lt;","<").replace("&gt;", ">"),
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                                    Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY).toString()
-                                else
-                                    Html.fromHtml(it).toString(),
-                                "text/html",
-                                "utf-8")
+                        val mainTextUnescaped = it.replace("&amp;", "&")
+                                .replace("&lt;", "<")
+                                .replace("&gt;", ">")
+                                .replace("\n\n", "<br/>")
+                                .replace("\n", "<br/>")
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                            this.textView.text = Html.fromHtml(mainTextUnescaped)
+                        } else {
+                            this.textView.text = Html.fromHtml(mainTextUnescaped, Html.FROM_HTML_MODE_COMPACT, null, codeTagHandler)
+                        }
                     }
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-//                        this.textView.text = Html.fromHtml(Html.fromHtml(mainText).toString())
-//                    } else {
-//                        this.textView.text = Html.fromHtml(Html.fromHtml(mainText, Html.FROM_HTML_MODE_LEGACY).toString(), Html.FROM_HTML_MODE_LEGACY)
-//                    }
-//                    this.textView.movementMethod = LinkMovementMethod.getInstance()
+
+                    this.textView.movementMethod = LinkMovementMethod.getInstance()
                 }
 
             }
@@ -117,7 +119,7 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 }
 
 class PostTextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val textView: WebView = itemView.findViewById(R.id.item_post_details_text)
+    val textView: TextView = itemView.findViewById(R.id.item_post_details_text)
 }
 
 class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
