@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.fitaleks.chandeddit.data.RedditComment
+import com.fitaleks.chandeddit.data.RedditPost
 import com.fitaleks.chandeddit.util.CodeTagHandler
 import com.fitaleks.chandeddit.util.timeDiffToStringShort
 import java.util.*
@@ -22,7 +23,7 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_TEXT = 1
     private val TYPE_COMMENTS = 2
     private val TYPE_COMMENTS_TITLE = 3
-    private var mainText: String? = null
+    private var redditPost: RedditPost? = null
     private var mainImage: String? = null
     private var comments: List<RedditComment>? = null
 
@@ -47,7 +48,7 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int {
         // there is always a comments title
-        var numOfItems = if (mainText == null) 1 else 2
+        var numOfItems = if (redditPost == null || redditPost?.selftextHtml == null) 1 else 2
         if (mainImage != null && mainImage?.startsWith("https") == true) {
             numOfItems++
         }
@@ -60,12 +61,18 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         when (getItemViewType(position)) {
             TYPE_TEXT -> {
-                if (mainText == null || mainText?.isEmpty() == true) {
+                if (redditPost == null) {
+                    return
+                }
+                if (redditPost?.title?.isEmpty() == false) {
+                    (holder as PostTextViewHolder).titleView.text = redditPost?.title
+                }
+                if (redditPost?.selftextHtml?.isEmpty() == true) {
                     return
                 }
                 (holder as PostTextViewHolder).apply {
                     val codeTagHandler = CodeTagHandler()
-                    mainText?.let {
+                    redditPost?.selftextHtml?.let {
                         val mainTextUnescaped = it.replace("&amp;", "&")
                                 .replace("&lt;", "<")
                                 .replace("&gt;", ">")
@@ -102,29 +109,25 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    fun setMainText(text: String?) {
-        mainText = text
-        mainText?.let {
-            //            notifyItemChanged(0)
-            notifyDataSetChanged()
-        }
-    }
-
     fun setComments(commentsList: List<RedditComment>) {
         comments = commentsList
         comments?.let {
             notifyDataSetChanged()
         }
     }
+
+    fun setRedditPost(data: RedditPost) {
+        this.redditPost = data
+    }
 }
 
 class PostTextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val titleView: TextView = itemView.findViewById(R.id.item_post_details_title)
     val textView: TextView = itemView.findViewById(R.id.item_post_details_text)
 }
 
 class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val authorTextView: TextView = itemView.findViewById(R.id.item_post_comment_author)
-    //    val timeTextView: TextView = itemView.findViewById(R.id.item_post_comment_time)
     val commentTextView: TextView = itemView.findViewById(R.id.item_post_comment_text)
 }
 

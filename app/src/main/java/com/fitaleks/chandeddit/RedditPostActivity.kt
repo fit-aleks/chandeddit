@@ -68,7 +68,10 @@ class RedditPostActivity : AppCompatActivity() {
                 details_image.visibility = View.GONE
             }
 
-            adapter.setMainText(it?.data?.selftextHtml)
+            it?.data?.let { post ->
+                adapter.setRedditPost(post)
+            }
+
         })
     }
 
