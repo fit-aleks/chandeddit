@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/horizontal_margin"
+    android:layout_marginStart="@dimen/horizontal_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/item_post_comment_author"
+        style="@style/TextViewStyle"
+        android:layout_marginTop="@dimen/default_margin"
+        android:maxLines="1"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="@color/defaultTextColor"
+        tools:text="Some author name • 11h" />
+
+    <TextView
+        android:id="@+id/item_post_comment_text"
+        style="@style/TextViewStyle"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:textAppearance="?android:textAppearanceMedium"
+        tools:text="Some comment" />
+
+</LinearLayout>
