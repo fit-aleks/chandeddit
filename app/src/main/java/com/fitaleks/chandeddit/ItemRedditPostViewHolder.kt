@@ -1,14 +1,12 @@
 package com.fitaleks.chandeddit
 
 import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.support.customtabs.CustomTabsCallback
 import android.support.customtabs.CustomTabsClient
 import android.support.customtabs.CustomTabsIntent
-import android.support.customtabs.CustomTabsServiceConnection
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -30,21 +28,8 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
     private val createdInfo = view.findViewById<TextView>(R.id.created)
     private lateinit var post: RedditPost
     private var customTabsClient: CustomTabsClient? = null
-    private val packageName = "com.android.chrome"
-
-    private val connection = object: CustomTabsServiceConnection() {
-        override fun onCustomTabsServiceConnected(name: ComponentName?, client: CustomTabsClient) {
-            customTabsClient = client
-            client.warmup(0)
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            customTabsClient = null
-        }
-    }
 
     init {
-        CustomTabsClient.bindCustomTabsService(view.context, packageName, connection)
 
         view.setOnClickListener { clickedView ->
             if (post.selftext?.isNotEmpty() == true) {
