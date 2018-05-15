@@ -56,7 +56,7 @@ class CommentTypeAdapterFactory : TypeAdapterFactory {
     }
 }
 
-class CommentsListTypeAdapter(val elemAdapter: TypeAdapter<JsonElement>): TypeAdapter<List<RedditComment>>() {
+class CommentsListTypeAdapter(val elemAdapter: TypeAdapter<JsonElement>) : TypeAdapter<List<RedditComment>>() {
     private val gson = Gson()
     override fun write(out: JsonWriter?, value: List<RedditComment>?) {
     }
@@ -75,12 +75,15 @@ class CommentsListTypeAdapter(val elemAdapter: TypeAdapter<JsonElement>): TypeAd
         val listOfComments = ArrayList<RedditComment>()
         if (jsonElement != null && jsonElement.isJsonArray) {
             val commentsWithKinds = jsonElement.asJsonArray
-            (0 until commentsWithKinds.size()).forEach { index ->
+            for (index in 0 until commentsWithKinds.size()) {
+                val kind = commentsWithKinds[index].asJsonObject.get("kind").asString
+                if (kind != "t1") {
+                    continue
+                }
                 val comment = commentsWithKinds[index].asJsonObject["data"]
                 Log.d("PARSER", " ${comment.asJsonObject["author"]} + ${comment.asJsonObject["body"]}")
                 listOfComments.add(gson.fromJson(comment, RedditComment::class.java))
             }
-
         }
         return listOfComments
     }
