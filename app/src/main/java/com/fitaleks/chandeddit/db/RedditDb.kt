@@ -12,7 +12,7 @@ import com.fitaleks.chandeddit.data.RedditPost
  */
 @Database(
         entities = [(RedditPost::class), (RedditComment::class)],
-        version = 3,
+        version = 4,
         exportSchema = false
 )
 abstract class RedditDb : RoomDatabase() {

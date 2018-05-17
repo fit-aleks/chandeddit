@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,32 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginBottom="@dimen/default_margin"
-        android:layout_marginTop="@dimen/default_margin">
+        android:layout_marginBottom="@dimen/default_margin">
 
         <ImageView
             android:id="@+id/item_image"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"  />
+            app:layout_constraintVertical_bias="0.5"
+            tools:src="@drawable/ic_launcher_background" />
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
             android:textAppearance="?android:textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginStart="@dimen/default_margin"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/created"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_image"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Title" />
+            app:layout_goneMarginStart="0dp"
+            tools:text="Title can be really long.Title can be really longTitle can be really long.Title can be really long.Title can be really long.Title can be really long." />
 
         <TextView
             android:id="@+id/created"
@@ -44,11 +45,28 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/default_margin"
             android:textAppearance="?android:textAppearanceSmall"
+            app:layout_constraintBottom_toBottomOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="@id/item_title"
             app:layout_constraintStart_toStartOf="@id/item_title"
             app:layout_constraintTop_toBottomOf="@id/item_title"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Submitted 2 days ago by Jaqen H'ghar" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="56dp" />
+
+        <Button
+            android:id="@+id/post_num_of_comments"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/TextViewStyle"
+            tools:text="14 comments"/>
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

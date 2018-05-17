@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.View
-import com.bumptech.glide.Glide
 import com.fitaleks.chandeddit.api.RedditCommentsApi
 import com.fitaleks.chandeddit.data.RedditComment
 import com.fitaleks.chandeddit.data.RedditPost
@@ -26,8 +24,8 @@ import retrofit2.Response
 class RedditPostActivity : AppCompatActivity() {
     companion object {
         const val PARAM_POST_ID = "reddit_post_id"
-        val TAG = RedditPostActivity::class.java.simpleName
-        val PARAM_POST_ID_WITH_KIND = "reddit_post_id_with_kind"
+        const val PARAM_POST_ID_WITH_KIND = "reddit_post_id_with_kind"
+        val TAG: String = RedditPostActivity::class.java.simpleName
     }
 
     private lateinit var model: CertainPostViewModel
@@ -60,13 +58,13 @@ class RedditPostActivity : AppCompatActivity() {
     private fun initData() {
         model.showPost(intent.getStringExtra(PARAM_POST_ID_WITH_KIND))
         model.repoResult.observe(this, Observer<Resource<RedditPost>> {
-            if (it?.data?.thumbnail?.startsWith("https") == true) {
-                Glide.with(this)
-                        .load(it.data.thumbnail)
-                        .into(details_image)
-            } else {
-                details_image.visibility = View.GONE
-            }
+//            if (it?.data?.thumbnail?.startsWith("https") == true) {
+//                Glide.with(this)
+//                        .load(it.data.thumbnail)
+//                        .into(details_image)
+//            } else {
+//                details_image.visibility = View.GONE
+//            }
 
             it?.data?.let { post ->
                 adapter.setRedditPost(post)

@@ -25,6 +25,8 @@ data class RedditPost(
         val author: String,
         @SerializedName("created_utc")
         val createdUtc: Double,
+        @SerializedName("num_comments")
+        val numComments: Int,
         val url: String?) {
     // to be consistent w/ changing backend order, we need to keep a data like this
     var indexInResponse: Int = -1

@@ -26,6 +26,7 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
     private val title = view.findViewById<TextView>(R.id.item_title)
     private val image = view.findViewById<ImageView>(R.id.item_image)
     private val createdInfo = view.findViewById<TextView>(R.id.created)
+    private val numOfComments = view.findViewById<TextView>(R.id.post_num_of_comments)
     private lateinit var post: RedditPost
     private var customTabsClient: CustomTabsClient? = null
 
@@ -86,6 +87,8 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
             val session = it.newSession(CustomTabsCallback())
             session.mayLaunchUrl(Uri.parse(post.url), null, null)
         }
+
+        numOfComments.text = numOfComments.context.resources.getQuantityString(R.plurals.num_of_comments, redditPost.numComments, redditPost.numComments)
     }
 
 }
