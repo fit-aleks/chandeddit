@@ -31,6 +31,7 @@
             android:layout_marginStart="@dimen/default_margin"
             android:textAppearance="?android:textAppearanceMedium"
             android:textStyle="bold"
+            style="@style/TextViewStyle"
             app:layout_constraintBottom_toTopOf="@+id/created"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_image"
@@ -45,6 +46,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/default_margin"
             android:textAppearance="?android:textAppearanceSmall"
+            style="@style/TextViewStyle"
+            android:textColor="@color/defaultTextColor"
             app:layout_constraintBottom_toBottomOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="@id/item_title"
             app:layout_constraintStart_toStartOf="@id/item_title"
@@ -61,12 +64,28 @@
 
         <Button
             android:id="@+id/post_num_of_comments"
+            style="@style/TextViewStyle"
             android:layout_width="0dp"
             android:layout_height="48dp"
+            android:drawableStart="@drawable/ic_mode_comment_grey_24dp"
+            android:textColor="@color/defaultTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/post_share"
             app:layout_constraintStart_toStartOf="parent"
+            tools:text="14 comments" />
+
+        <Button
+            android:id="@+id/post_share"
             style="@style/TextViewStyle"
-            tools:text="14 comments"/>
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:drawableStart="@drawable/ic_share_grey_24dp"
+            android:text="@string/share"
+            android:textColor="@color/defaultTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/post_num_of_comments"
+            app:layout_constraintVertical_chainStyle="packed" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

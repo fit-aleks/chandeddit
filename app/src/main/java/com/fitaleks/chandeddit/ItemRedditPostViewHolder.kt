@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
@@ -26,7 +27,8 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
     private val title = view.findViewById<TextView>(R.id.item_title)
     private val image = view.findViewById<ImageView>(R.id.item_image)
     private val createdInfo = view.findViewById<TextView>(R.id.created)
-    private val numOfComments = view.findViewById<TextView>(R.id.post_num_of_comments)
+    private val numOfComments = view.findViewById<Button>(R.id.post_num_of_comments)
+    private val share = view.findViewById<Button>(R.id.post_share)
     private lateinit var post: RedditPost
     private var customTabsClient: CustomTabsClient? = null
 
@@ -44,7 +46,7 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
                         .setCloseButtonIcon(BitmapFactory.decodeResource(clickedView.context.resources, R.drawable.ic_arrow_back_white_24dp))
                         .setShowTitle(true)
 
-                val shareLabel = "share"
+                val shareLabel = clickedView.context.getString(R.string.share)
                 val shareIcon = BitmapFactory.decodeResource(clickedView.context.resources, R.drawable.ic_share_white_24dp)
                 val actionIntent = Intent(Intent.ACTION_SEND)
                 actionIntent.putExtra(Intent.EXTRA_TEXT, post.url)
@@ -54,6 +56,18 @@ class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : Recycler
 
                 builder.build().launchUrl(clickedView.context, Uri.parse(post.url))
             }
+        }
+        numOfComments.setOnClickListener {
+            val intent = Intent(numOfComments.context, RedditPostActivity::class.java)
+            intent.putExtra(RedditPostActivity.PARAM_POST_ID_WITH_KIND, post.name)
+            intent.putExtra(RedditPostActivity.PARAM_POST_ID, post.id)
+            numOfComments.context.startActivity(intent)
+        }
+        share.setOnClickListener {
+            val actionIntent = Intent(Intent.ACTION_SEND)
+            actionIntent.putExtra(Intent.EXTRA_TEXT, post.url)
+            actionIntent.type = "text/plain"
+            share.context.startActivity(actionIntent)
         }
     }
 
