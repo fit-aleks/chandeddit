@@ -9,7 +9,7 @@ import java.util.*
 /**
  * Created by alex206512252 on 12/28/17.
  */
-const val KEY_PREFERENCES_UUID = "preferences_uuid"
+const val KEY_PREFERENCES_UUID: String = "preferences_uuid"
 class ChandedditApp : Application() {
     private val LOG_TAG = ChandedditApp::class.java.simpleName
 
@@ -17,13 +17,13 @@ class ChandedditApp : Application() {
         super.onCreate()
 
         var uuid = getUUID()
-        if (uuid.isEmpty()) {
+        if (uuid?.isEmpty() == false) {
             uuid = UUID.randomUUID().toString()
         }
         Log.d(LOG_TAG, "uuid = $uuid")
     }
 
-    private fun getUUID(): String {
+    private fun getUUID(): String? {
         val sp:SharedPreferences = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         return sp.getString(KEY_PREFERENCES_UUID, "")
     }

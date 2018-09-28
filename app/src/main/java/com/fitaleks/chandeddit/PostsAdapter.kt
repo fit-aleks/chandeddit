@@ -1,7 +1,7 @@
 package com.fitaleks.chandeddit
 
 import android.arch.paging.PagedListAdapter
-import android.support.v7.recyclerview.extensions.DiffCallback
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
@@ -19,7 +19,8 @@ class PostsAdapter(
 
     private fun hasExtraRow(): Boolean = networkState != null && networkState != NetworkState.LOADED
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder,
+                                  position: Int) {
         when (getItemViewType(position)) {
             R.layout.item_network_state -> (holder as ItemNetworkStateViewHolder).bindTo(networkState)
             R.layout.item_reddit_post -> (holder as ItemRedditPostViewHolder).bind(getItem(position))
@@ -59,7 +60,7 @@ class PostsAdapter(
     }
 
     companion object {
-        val POST_COMPARATOR = object : DiffCallback<RedditPost>() {
+        val POST_COMPARATOR = object : DiffUtil.ItemCallback<RedditPost>() {
             override fun areItemsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean = oldItem.name == newItem.name

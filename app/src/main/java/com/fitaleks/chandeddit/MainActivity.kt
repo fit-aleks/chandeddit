@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             model.retry()
         }
         list.adapter = adapter
-        model.posts.observe(this, Observer { adapter.setList(it) })
+        model.posts.observe(this, Observer { adapter.submitList(it) })
         model.networkState.observe(this, Observer { adapter.setNetworkState(it) })
     }
 

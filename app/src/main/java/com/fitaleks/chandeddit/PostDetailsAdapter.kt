@@ -58,7 +58,7 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return numOfItems
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             TYPE_TEXT -> {
                 if (redditPost == null) {

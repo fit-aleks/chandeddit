@@ -59,7 +59,7 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    private fun getAccessToken(code: String) {
+    private fun getAccessToken(code: String?) {
         val client = OkHttpClient()
         val authString = CLIENT_ID + ":"
         val encodedAuthString = Base64.encodeToString(authString.toByteArray(), Base64.NO_WRAP)
@@ -81,14 +81,13 @@ class LoginActivity: AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 val json = response.body()?.string() ?: ""
 
-                var data: JSONObject? = null
                 try {
-                    data = JSONObject(json)
+                    val data = JSONObject(json)
                     val accessToken = data.optString("access_token")
                     val refreshToken = data.optString("refresh_token")
 
-                    Log.d(TAG, "Access Token = " + accessToken)
-                    Log.d(TAG, "Refresh Token = " + refreshToken)
+                    Log.d(TAG, "Access Token = $accessToken")
+                    Log.d(TAG, "Refresh Token = $refreshToken")
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
