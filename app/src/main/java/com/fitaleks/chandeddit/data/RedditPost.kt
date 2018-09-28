@@ -1,6 +1,6 @@
 package com.fitaleks.chandeddit.data
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken

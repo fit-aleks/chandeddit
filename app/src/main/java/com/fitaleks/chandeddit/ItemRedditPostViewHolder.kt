@@ -4,11 +4,11 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.support.customtabs.CustomTabsCallback
-import android.support.customtabs.CustomTabsClient
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.browser.customtabs.CustomTabsCallback
+import androidx.browser.customtabs.CustomTabsClient
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,7 @@ import java.util.*
 /**
  * Created by Alexander on 04.01.2018.
  */
-class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : RecyclerView.ViewHolder(view) {
+class ItemRedditPostViewHolder(view: View, var glide: RequestManager) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
     private val title = view.findViewById<TextView>(R.id.item_title)
     private val image = view.findViewById<ImageView>(R.id.item_image)
     private val createdInfo = view.findViewById<TextView>(R.id.created)

@@ -1,6 +1,6 @@
 package com.fitaleks.chandeddit.api
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import android.util.Log
 import com.fitaleks.chandeddit.data.RedditPost
 import okhttp3.OkHttpClient

@@ -1,9 +1,9 @@
 package com.fitaleks.chandeddit.repository
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
-import android.arch.paging.LivePagedListBuilder
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
 import com.fitaleks.chandeddit.SubredditBoundaryCallbcack
 import com.fitaleks.chandeddit.api.RedditApi
 import com.fitaleks.chandeddit.data.RedditPost

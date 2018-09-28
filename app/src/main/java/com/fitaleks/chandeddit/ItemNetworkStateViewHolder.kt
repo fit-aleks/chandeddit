@@ -1,6 +1,6 @@
 package com.fitaleks.chandeddit
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,7 @@ import com.fitaleks.chandeddit.repository.Status
 /**
  * Created by Alexander on 04.01.2018.
  */
-class ItemNetworkStateViewHolder(view: View, retryCallback: () -> Unit) : RecyclerView.ViewHolder(view) {
+class ItemNetworkStateViewHolder(view: View, retryCallback: () -> Unit) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
     private val progressBar = view.findViewById<ProgressBar>(R.id.item_progressbar)
     private val errorMsg = view.findViewById<TextView>(R.id.item_error_msg)
     private val btnRetry = view.findViewById<Button>(R.id.item_btn_retry)

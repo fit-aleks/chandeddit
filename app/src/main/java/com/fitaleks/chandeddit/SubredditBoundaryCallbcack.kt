@@ -1,7 +1,7 @@
 package com.fitaleks.chandeddit
 
-import android.arch.paging.PagedList
 import android.arch.paging.PagingRequestHelper
+import androidx.paging.PagedList
 import com.fitaleks.chandeddit.api.RedditApi
 import com.fitaleks.chandeddit.data.RedditPost
 import com.fitaleks.chandeddit.util.createStatusLiveData

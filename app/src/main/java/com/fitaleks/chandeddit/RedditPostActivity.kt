@@ -1,14 +1,12 @@
 package com.fitaleks.chandeddit
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.fitaleks.chandeddit.api.RedditCommentsApi
 import com.fitaleks.chandeddit.data.RedditComment
 import com.fitaleks.chandeddit.data.RedditPost
@@ -37,9 +35,9 @@ class RedditPostActivity : AppCompatActivity() {
         model = getViewModel()
         initData()
 
-        details_recycler.layoutManager = LinearLayoutManager(this)
+        details_recycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         details_recycler.adapter = adapter
-        details_recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        details_recycler.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
 
         initData()
         initComments()

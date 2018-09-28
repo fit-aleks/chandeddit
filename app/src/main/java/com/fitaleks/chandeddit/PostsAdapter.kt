@@ -1,8 +1,8 @@
 package com.fitaleks.chandeddit
 
-import android.arch.paging.PagedListAdapter
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
 import com.fitaleks.chandeddit.data.RedditPost
@@ -13,13 +13,13 @@ import com.fitaleks.chandeddit.repository.NetworkState
  */
 class PostsAdapter(
         private var glide: RequestManager,
-        private var retryCallback: () -> Unit) : PagedListAdapter<RedditPost, RecyclerView.ViewHolder>(POST_COMPARATOR) {
+        private var retryCallback: () -> Unit) : PagedListAdapter<RedditPost, androidx.recyclerview.widget.RecyclerView.ViewHolder>(POST_COMPARATOR) {
 
     private var networkState: NetworkState? = null
 
     private fun hasExtraRow(): Boolean = networkState != null && networkState != NetworkState.LOADED
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder,
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
                                   position: Int) {
         when (getItemViewType(position)) {
             R.layout.item_network_state -> (holder as ItemNetworkStateViewHolder).bindTo(networkState)
@@ -27,7 +27,7 @@ class PostsAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         return when(viewType) {
             R.layout.item_reddit_post -> ItemRedditPostViewHolder.create(parent, glide)
             R.layout.item_network_state -> ItemNetworkStateViewHolder.create(parent, retryCallback)

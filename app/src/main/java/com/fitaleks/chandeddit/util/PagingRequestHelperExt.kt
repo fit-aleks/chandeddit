@@ -1,8 +1,8 @@
 package com.fitaleks.chandeddit.util
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PagingRequestHelper
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.fitaleks.chandeddit.repository.NetworkState
 
 /**

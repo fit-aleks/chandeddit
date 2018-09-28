@@ -1,7 +1,7 @@
 package com.fitaleks.chandeddit
 
 import android.os.Build
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -18,7 +18,7 @@ import java.util.*
 /**
  * Created by Alexander on 03.04.2018.
  */
-class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostDetailsAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
     private val TYPE_IMAGE = 0
     private val TYPE_TEXT = 1
     private val TYPE_COMMENTS = 2
@@ -27,7 +27,7 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mainImage: String? = null
     private var comments: List<RedditComment>? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_TEXT -> PostTextViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_text, parent, false))
             TYPE_COMMENTS -> CommentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_comment, parent, false))
@@ -58,7 +58,7 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return numOfItems
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             TYPE_TEXT -> {
                 if (redditPost == null) {
@@ -121,18 +121,18 @@ class PostDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 }
 
-class PostTextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PostTextViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     val titleView: TextView = itemView.findViewById(R.id.item_post_details_title)
     val textView: TextView = itemView.findViewById(R.id.item_post_details_text)
 }
 
-class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class CommentViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     val authorTextView: TextView = itemView.findViewById(R.id.item_post_comment_author)
     val commentTextView: TextView = itemView.findViewById(R.id.item_post_comment_text)
 }
 
-class CommentTitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class CommentTitleViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView)
 
-class PostImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PostImageViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     val textView: ImageView = itemView.findViewById(R.id.item_post_details_image)
 }
