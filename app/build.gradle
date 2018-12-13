@@ -26,7 +26,9 @@ android {
 
 ext {
     glide = '4.4.0'
-    supportLibVersion = '1.0.0'
+    appcompatVersion = '1.0.2'
+    recyclerViewVersion = '1.0.0'
+    cardViewVersion = '1.0.0'
     constraintLayout = '2.0.0-alpha2'
     okhttp = '3.9.1'
     retrofit = '2.3.0'
@@ -38,9 +40,9 @@ ext {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:$supportLibVersion"
-    implementation "androidx.recyclerview:recyclerview:$supportLibVersion"
-    implementation "androidx.cardview:cardview:$supportLibVersion"
+    implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    implementation "androidx.cardview:cardview:$cardViewVersion"
     implementation 'com.google.android.material:material:1.0.0'
 
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayout"
@@ -62,12 +64,12 @@ dependencies {
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
 
-    implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.7'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
