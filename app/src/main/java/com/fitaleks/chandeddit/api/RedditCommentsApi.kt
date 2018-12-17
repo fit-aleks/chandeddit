@@ -81,7 +81,6 @@ class CommentsListTypeAdapter(val elemAdapter: TypeAdapter<JsonElement>) : TypeA
                     continue
                 }
                 val comment = commentsWithKinds[index].asJsonObject["data"]
-                Log.d("PARSER", " ${comment.asJsonObject["author"]} + ${comment.asJsonObject["body"]}")
                 listOfComments.add(gson.fromJson(comment, RedditComment::class.java))
             }
         }

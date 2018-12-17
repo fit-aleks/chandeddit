@@ -5,23 +5,35 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/horizontal_margin"
     android:layout_marginStart="@dimen/horizontal_margin"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/item_post_comment_author"
-        style="@style/TextViewStyle"
-        android:layout_marginTop="@dimen/default_margin"
-        android:maxLines="1"
-        android:textAppearance="?android:textAppearanceSmall"
-        android:textColor="@color/defaultTextColor"
-        tools:text="Some author name • 11h" />
+    <LinearLayout
+        android:id="@+id/depth_indicator_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"/>
 
-    <TextView
-        android:id="@+id/item_post_comment_text"
-        style="@style/TextViewStyle"
-        android:layout_marginBottom="@dimen/default_margin"
-        android:layout_marginTop="@dimen/default_margin"
-        android:textAppearance="?android:textAppearanceMedium"
-        tools:text="Some comment" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/authorTextView"
+            style="@style/TextViewStyle"
+            android:layout_marginTop="@dimen/default_margin"
+            android:maxLines="1"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/defaultTextColor"
+            tools:text="Some author name • 11h" />
+
+        <com.fitaleks.chandeddit.TextViewClickableWithLinks
+            android:id="@+id/commentTextView"
+            style="@style/TextViewStyle"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_margin"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:text="Some comment" />
+
+    </LinearLayout>
 
 </LinearLayout>

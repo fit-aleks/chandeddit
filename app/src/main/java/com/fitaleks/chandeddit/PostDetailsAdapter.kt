@@ -1,138 +1,195 @@
 package com.fitaleks.chandeddit
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
+import android.text.Selection
+import android.text.Spannable
 import android.text.method.LinkMovementMethod
+import android.text.method.Touch
+import android.text.style.ClickableSpan
+import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
+import android.view.MotionEvent
 import android.widget.TextView
 import com.fitaleks.chandeddit.data.RedditComment
 import com.fitaleks.chandeddit.data.RedditPost
 import com.fitaleks.chandeddit.util.CodeTagHandler
 import com.fitaleks.chandeddit.util.timeDiffToStringShort
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.ExpandableItem
+import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import kotlinx.android.synthetic.main.item_post_comment.*
+import kotlinx.android.synthetic.main.item_post_text.*
 import java.util.*
+
 
 /**
  * Created by Alexander on 03.04.2018.
  */
-class PostDetailsAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
-    private val TYPE_IMAGE = 0
-    private val TYPE_TEXT = 1
-    private val TYPE_COMMENTS = 2
-    private val TYPE_COMMENTS_TITLE = 3
-    private var redditPost: RedditPost? = null
-    private var mainImage: String? = null
-    private var comments: List<RedditComment>? = null
+class TextPostItem(private val redditPost: RedditPost?) : Item() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_TEXT -> PostTextViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_text, parent, false))
-            TYPE_COMMENTS -> CommentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_comment, parent, false))
-            TYPE_COMMENTS_TITLE -> CommentTitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_post_comments_title, parent, false))
-            else -> TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getLayout(): Int = R.layout.item_post_text
+
+    override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
+        if (redditPost == null) {
+            return
+        }
+        if (!redditPost.title.isEmpty()) {
+            viewHolder.item_post_details_title.text = redditPost.title
+        }
+        if (redditPost.selftextHtml == null || redditPost.selftextHtml.isEmpty()) {
+            return
+        }
+        val codeTagHandler = CodeTagHandler()
+        val mainTextUnescaped = redditPost.selftextHtml.replace("&amp;", "&")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("\n\n", "<br/>")
+                .replace("\n", "<br/>")
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            viewHolder.item_post_details_text.text = Html.fromHtml(mainTextUnescaped)
+        } else {
+            viewHolder.item_post_details_text.text = Html.fromHtml(mainTextUnescaped, Html.FROM_HTML_MODE_COMPACT, null, codeTagHandler)
         }
 
+        viewHolder.item_post_details_text.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when {
-            position == 0 -> TYPE_TEXT
-            position == 1 -> TYPE_COMMENTS_TITLE
-            comments != null && (position - 2) < (comments?.size ?: 0) -> TYPE_COMMENTS
-            else -> TYPE_TEXT
+}
+
+class CommentHeaderItem : Item() {
+    override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
+    }
+
+    override fun getLayout(): Int = R.layout.item_post_comments_title
+}
+
+open class CommentItem(private val comment: RedditComment, val depth: Int = 0) : Item() {
+
+    override fun getLayout(): Int = R.layout.item_post_comment
+
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+
+        val diff = Date().time - Date(comment.createdUtc.toLong() * 1000).time
+        viewHolder.authorTextView.text = viewHolder.authorTextView.context.getString(R.string.item_reddit_comment_created, comment.author, timeDiffToStringShort(diff))
+        // one convert from html to text is not enough. format requires it to be done twice
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            viewHolder.commentTextView.text = Html.fromHtml(Html.fromHtml(comment.bodyHtml, Html.FROM_HTML_MODE_LEGACY).toString(), Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            viewHolder.commentTextView.text = Html.fromHtml(Html.fromHtml(comment.bodyHtml).toString())
+        }
+        viewHolder.commentTextView.movementMethod = LocalLinkMovementMethod
+
+
+        buildDepth(viewHolder)
+    }
+
+    private fun buildDepth(viewHolder: ViewHolder) {
+        viewHolder.depth_indicator_container.removeAllViews()
+        val layoutInflater = LayoutInflater.from(viewHolder.itemView.context)
+        (0 until depth).forEach {
+            val separator = layoutInflater.inflate(R.layout.depth_indicator, viewHolder.depth_indicator_container, false)
+            viewHolder.depth_indicator_container.addView(separator)
+        }
+        viewHolder.depth_indicator_container.requestLayout()
+    }
+}
+
+class ExpandableComment(comment: RedditComment, depth: Int = 0) : CommentItem(comment, depth), ExpandableItem {
+    private lateinit var expandableGroup: ExpandableGroup
+
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
+
+        viewHolder.itemView.setOnClickListener {
+            expandableGroup.onToggleExpanded()
         }
     }
 
-    override fun getItemCount(): Int {
-        // there is always a comments title
-        var numOfItems = if (redditPost == null || redditPost?.selftextHtml == null) 1 else 2
-        if (mainImage != null && mainImage?.startsWith("https") == true) {
-            numOfItems++
-        }
-        comments?.let {
-            numOfItems += it.size
-        }
-        return numOfItems
+    override fun setExpandableGroup(onToggleListener: ExpandableGroup) {
+        expandableGroup = onToggleListener
     }
+}
 
-    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
-        when (getItemViewType(position)) {
-            TYPE_TEXT -> {
-                if (redditPost == null) {
-                    return
-                }
-                if (redditPost?.title?.isEmpty() == false) {
-                    (holder as PostTextViewHolder).titleView.text = redditPost?.title
-                }
-                if (redditPost?.selftextHtml?.isEmpty() == true) {
-                    return
-                }
-                (holder as PostTextViewHolder).apply {
-                    val codeTagHandler = CodeTagHandler()
-                    redditPost?.selftextHtml?.let {
-                        val mainTextUnescaped = it.replace("&amp;", "&")
-                                .replace("&lt;", "<")
-                                .replace("&gt;", ">")
-                                .replace("\n\n", "<br/>")
-                                .replace("\n", "<br/>")
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                            this.textView.text = Html.fromHtml(mainTextUnescaped)
-                        } else {
-                            this.textView.text = Html.fromHtml(mainTextUnescaped, Html.FROM_HTML_MODE_COMPACT, null, codeTagHandler)
-                        }
-                    }
+class TextViewClickableWithLinks : TextView {
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-                    this.textView.movementMethod = LinkMovementMethod.getInstance()
+    var linkHit: Boolean = false
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        linkHit = false
+        val res = super.onTouchEvent(event)
+        if (linkHit) {
+            return res
+        }
+        return false
+    }
+}
+
+object LocalLinkMovementMethod : LinkMovementMethod() {
+
+    override fun onTouchEvent(widget: TextView,
+                              buffer: Spannable, event: MotionEvent): Boolean {
+        val action = event.action
+
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+            var x = event.x.toInt()
+            var y = event.y.toInt()
+
+            x -= widget.totalPaddingLeft
+            y -= widget.totalPaddingTop
+
+            x += widget.scrollX
+            y += widget.scrollY
+
+            val layout = widget.layout
+            val line = layout.getLineForVertical(y)
+            val off = layout.getOffsetForHorizontal(line, x.toFloat())
+
+            val link = buffer.getSpans(
+                    off, off, ClickableSpan::class.java)
+
+            if (link.size != 0) {
+                if (action == MotionEvent.ACTION_UP) {
+                    link[0].onClick(widget)
+                } else if (action == MotionEvent.ACTION_DOWN) {
+                    Selection.setSelection(buffer,
+                            buffer.getSpanStart(link[0]),
+                            buffer.getSpanEnd(link[0]))
                 }
 
+                if (widget is TextViewClickableWithLinks) {
+                    widget.linkHit = true
+                }
+                return true
+            } else {
+                Selection.removeSelection(buffer)
+                Touch.onTouchEvent(widget, buffer, event)
+                return false
             }
-            TYPE_COMMENTS -> {
-                comments?.let {
-                    val comment = it[position - 2]
-                    (holder as CommentViewHolder).apply {
-                        val diff = Date().time - Date(comment.createdUtc.toLong() * 1000).time
-                        this.authorTextView.text = this.authorTextView.context.getString(R.string.item_reddit_comment_created, comment.author, timeDiffToStringShort(diff))
-                        // one convert from html to text is not enough. format requires it to be done twice
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            this.commentTextView.text = Html.fromHtml(Html.fromHtml(comment.bodyHtml, Html.FROM_HTML_MODE_LEGACY).toString(), Html.FROM_HTML_MODE_LEGACY)
-                        } else {
-                            this.commentTextView.text = Html.fromHtml(Html.fromHtml(comment.bodyHtml).toString())
-                        }
-                        this.commentTextView.movementMethod = LinkMovementMethod.getInstance()
-                    }
-                }
+        }
+        return Touch.onTouchEvent(widget, buffer, event)
+    }
+
+    /*companion object {
+        internal var sInstance: LocalLinkMovementMethod? = null
+
+
+        val instance: LocalLinkMovementMethod
+            get() {
+                if (sInstance == null)
+                    sInstance = LocalLinkMovementMethod()
+
+                return sInstance
             }
-            TYPE_COMMENTS_TITLE -> {}
-        }
-    }
-
-    fun setComments(commentsList: List<RedditComment>) {
-        comments = commentsList
-        comments?.let {
-            notifyDataSetChanged()
-        }
-    }
-
-    fun setRedditPost(data: RedditPost) {
-        this.redditPost = data
-    }
-}
-
-class PostTextViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val titleView: TextView = itemView.findViewById(R.id.item_post_details_title)
-    val textView: TextView = itemView.findViewById(R.id.item_post_details_text)
-}
-
-class CommentViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val authorTextView: TextView = itemView.findViewById(R.id.item_post_comment_author)
-    val commentTextView: TextView = itemView.findViewById(R.id.item_post_comment_text)
-}
-
-class CommentTitleViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView)
-
-class PostImageViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val textView: ImageView = itemView.findViewById(R.id.item_post_details_image)
+    }*/
 }

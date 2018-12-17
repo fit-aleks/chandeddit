@@ -1,9 +1,9 @@
 package com.fitaleks.chandeddit.db
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import android.content.Context
 import com.fitaleks.chandeddit.data.RedditComment
 import com.fitaleks.chandeddit.data.RedditPost
 
@@ -12,7 +12,7 @@ import com.fitaleks.chandeddit.data.RedditPost
  */
 @Database(
         entities = [(RedditPost::class), (RedditComment::class)],
-        version = 4,
+        version = 1,
         exportSchema = false
 )
 abstract class RedditDb : RoomDatabase() {

@@ -10,9 +10,9 @@ import com.fitaleks.chandeddit.repository.RedditPostRepository
  */
 class CertainPostViewModel(private val repository: RedditPostRepository) : ViewModel() {
     private val postId = MutableLiveData<String>()
-    val repoResult = switchMap(postId, {
+    val repoResult = switchMap(postId) {
         repository.postById(it)
-    })
+    }
 
     fun showPost(postName: String) {
         if (postId.value == postName) {
