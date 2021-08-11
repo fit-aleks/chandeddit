@@ -1,9 +1,14 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      android: 29
   build:
     commands:
+      - chmod +x ./gradlew
       - ./gradlew assembleDebug
 artifacts:
   files:
     - app/build/outputs/apk/app-debug.apk
+  discard-paths: yes
